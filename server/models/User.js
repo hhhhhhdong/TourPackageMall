@@ -36,7 +36,7 @@ const userSchema = mongoose.Schema({
 
 // 몽구스에서 제공되는 메소드 save메소드가 실행되기 전에 뭔가를 먼저 실행시켜준다
 userSchema.pre("save", function (next) {
-  const user = this; //this = const user = new User(req.body)
+  const user = this;
   if (user.isModified("password")) {
     bcrypt.genSalt(saltRounds, (err, salt) => {
       if (err) return next(err);
