@@ -1,0 +1,63 @@
+@import "~antd/dist/antd.css";
+
+.menu {
+  position: fixed;
+  width: 100%;
+  padding: 0 20px;
+  border-bottom: solid 1px #e8e8e8;
+  box-shadow: 0 0 30px #f3f1f1;
+  /* z-index: 5; */
+  /* overflow: auto; */
+  /* background-color: white; */
+  display: flex;
+  align-items: center;
+}
+.menu__logo {
+  width: 150px;
+}
+
+.menu__logo a {
+  font-size: 20px;
+}
+
+.menu__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.menu__mobile-button {
+  padding: 6px;
+  display: none !important;
+  background: #3e91f7;
+}
+
+@media (max-width: 767px) {
+  .menu {
+    padding: 0;
+  }
+
+  .menu a {
+    padding-left: 10px;
+  }
+
+  .menu__container {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .menu__mobile-button {
+    display: inline-block !important;
+  }
+
+  .menu_left,
+  .menu_rigth {
+    display: none;
+  }
+
+  /* .menu__container .ant-menu-item,
+  .menu__container .ant-menu-submenu-title {
+    padding: 1px 20px;
+  } */
+}

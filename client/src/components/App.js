@@ -1,30 +1,37 @@
-import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React, { Suspense } from "react";
+import { Switch, Route } from "react-router-dom";
 import Auth from "../hoc/auth";
 
 import LandingPage from "./views/LandingPage/LandingPage";
 import LoginPage from "./views/LoginPage/LoginPage";
 import RegisterPage from "./views/RegisterPage/RegisterPage";
+import UploadProductPage from "./views/UploadProductPage/UploadProductPage";
+import NavBar from "./views/NavBar/NavBar";
+import Footer from "./views/Footer/Footer";
 
 function App() {
   return (
-    <Router>
+    <Suspense fallback={<div>Loading...</div>}>
+      <NavBar />
       <div>
-        {/*
-          A <Switch> looks through all its children <Route>
-          elements and renders the first one whose path
-          matches the current URL. Use a <Switch> any time
-          you have multiple routes, but you want only one
-          of them to render at a time
-        */}
         <Switch>
           <Route exact path="/" component={Auth(LandingPage, null)} />
           <Route exact path="/login" component={Auth(LoginPage, false)} />
           <Route exact path="/register" component={Auth(RegisterPage, false)} />
+          <Route
+            exact
+            path="/product/upload"
+            component={Auth(UploadProductPage, true)}
+          />
         </Switch>
       </div>
-    </Router>
+      <Footer />
+    </Suspense>
   );
 }
 
 export default App;
+
+//null   Anyone Can go inside
+//true   only logged in user can go inside
+//false  logged in user can't go inside
