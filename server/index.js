@@ -16,6 +16,7 @@ mongoose
   .then(() => console.log("mongoDB Connected..."))
   .catch((err) => console.log(err));
 
+app.use("/uploads", express.static("uploads"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());

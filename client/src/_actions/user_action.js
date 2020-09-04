@@ -26,6 +26,7 @@ export function auth() {
   const request = axios
     .get(`${USER_SERVER}/auth`)
     .then((response) => response.data);
+
   return {
     type: AUTH_USER,
     payload: request,

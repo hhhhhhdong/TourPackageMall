@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Typography, Button, Form, Input } from "antd";
 import FileUpload from "../../utils/FileUpload";
+import Axios from "axios";
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -15,15 +16,15 @@ const Continents = [
   { key: 7, value: "Antarctica" },
 ];
 
-function UploadProductPage() {
-  const [Name, setName] = useState("");
+function UploadProductPage(props) {
+  const [ProductTitle, setProductTitle] = useState("");
   const [Description, setDescription] = useState("");
   const [Price, setPrice] = useState(0);
   const [Continent, setContinent] = useState(1);
   const [Images, setImages] = useState([]);
 
-  const nameChangeHandler = (event) => {
-    setName(event.currentTarget.value);
+  const ProductTitleChangeHandler = (event) => {
+    setProductTitle(event.currentTarget.value);
   };
 
   const descriptionChangeHandler = (event) => {
@@ -38,6 +39,36 @@ function UploadProductPage() {
     setContinent(event.currentTarget.value);
   };
 
+  const updateImages = (newImages) => {
+    setImages(newImages);
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    if (!ProductTitle || !Description || !Price || !Continent || !Images) {
+      return alert("모든 값을 입력해 주셔야합니다.");
+    }
+
+    const body = {
+      writer: props.user.userData._id,
+      title: ProductTitle,
+      description: Description,
+      price: Price,
+      continent: Continent,
+      images: Images,
+    };
+
+    Axios.post("/api/product", body).then((response) => {
+      if (response.data.success) {
+        alert("상품업로드에 성공했습니다.");
+        props.history.push("/");
+      } else {
+        alert("상품업로드에 실패했습니다.");
+      }
+    });
+  };
+
   return (
     <div style={{ maxWidth: "700px", margin: "2rem auto" }}>
       <div style={{ textAlign: "center", marginBottom: "2rem" }}>
@@ -45,11 +76,11 @@ function UploadProductPage() {
       </div>
 
       <Form>
-        <FileUpload />
+        <FileUpload refreshFunction={updateImages} />
         <br />
         <br />
         <label>이름</label>
-        <Input onChange={nameChangeHandler} value={Name} />
+        <Input onChange={ProductTitleChangeHandler} value={ProductTitle} />
         <br />
         <br />
         <label>설명</label>
@@ -69,7 +100,7 @@ function UploadProductPage() {
         </select>
         <br />
         <br />
-        <Button>확인</Button>
+        <Button onClick={submitHandler}>확인</Button>
       </Form>
     </div>
   );
