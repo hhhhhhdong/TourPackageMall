@@ -7,6 +7,7 @@ import ImageSlider from "../../utils/ImageSlider";
 import CheckBox from "./Sections/CheckBox";
 import { Continents, Price } from "./Sections/Datas";
 import RadioBox from "./Sections/RadioBox";
+import SearchFeature from "./Sections/SearchFeature";
 const { Meta } = Card;
 
 function LandingPage() {
@@ -18,6 +19,8 @@ function LandingPage() {
     continent: [],
     price: [],
   });
+  const [SearchTerm, setSearchTerm] = useState("");
+  console.log(SearchTerm);
 
   useEffect(() => {
     let body = {
@@ -97,6 +100,19 @@ function LandingPage() {
     showFilteredResults(newFilters);
     setFilters(newFilters);
   };
+
+  const updateSearchTerm = (newSearchTerm) => {
+    let body = {
+      skip: 0,
+      limit: 8,
+      filter: Filters,
+      searchTerm: newSearchTerm,
+    };
+    setSearchTerm(newSearchTerm);
+    getProducts(body);
+    setSkip(0);
+  };
+
   return (
     <div style={{ width: "75%", margin: "3rem auto" }}>
       <div style={{ textAlign: "center" }}>
@@ -118,7 +134,15 @@ function LandingPage() {
           />
         </Col>
       </Row>
-
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          margin: "1rem auto",
+        }}
+      >
+        <SearchFeature refreshFunction={updateSearchTerm} />
+      </div>
       <Row gutter={[16, 16]}>{renderCards}</Row>
       {PostSize >= Limit && (
         <div style={{ display: "flex", justifyContent: "center" }}>
