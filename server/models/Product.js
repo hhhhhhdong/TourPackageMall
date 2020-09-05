@@ -33,6 +33,7 @@ const productSchema = mongoose.Schema(
     },
     continent: {
       type: Number,
+      dejault: 1,
     },
   },
   { timestamps: true }

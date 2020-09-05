@@ -4,6 +4,9 @@ import axios from "axios";
 import { RocketOutlined } from "@ant-design/icons";
 import { Card, Row, Col } from "antd";
 import ImageSlider from "../../utils/ImageSlider";
+import CheckBox from "./Sections/CheckBox";
+import { Continents, Price } from "./Sections/Datas";
+import RadioBox from "./Sections/RadioBox";
 const { Meta } = Card;
 
 function LandingPage() {
@@ -11,6 +14,10 @@ function LandingPage() {
   const [Skip, setSkip] = useState(0);
   const [Limit, setLimit] = useState(8);
   const [PostSize, setPostSize] = useState(0);
+  const [Filters, setFilters] = useState({
+    continent: [],
+    price: [],
+  });
 
   useEffect(() => {
     let body = {
@@ -36,10 +43,8 @@ function LandingPage() {
       if (response.data.success) {
         if (body.moreLoad) {
           setProducts([...Products, ...response.data.productInfo]);
-          console.log(response.data.productInfo);
         } else {
           setProducts(response.data.productInfo);
-          console.log(response.data.productInfo);
         }
         setPostSize(response.data.postSize);
       } else {
@@ -57,6 +62,41 @@ function LandingPage() {
       </Col>
     );
   });
+
+  const showFilteredResults = (filters) => {
+    console.log(filters);
+    let body = {
+      skip: 0,
+      limit: Limit,
+      filters: filters,
+    };
+    getProducts(body);
+    setSkip(0);
+  };
+
+  const handlePrice = (value) => {
+    const data = Price;
+    let array = [];
+    for (let key in data) {
+      if (data[key].key === parseInt(value, 10)) {
+        array = data[key].array;
+      }
+    }
+    return array;
+  };
+
+  const handleFilters = (filters, category) => {
+    const newFilters = { ...Filters };
+
+    if (category === "price") {
+      let priceValues = handlePrice(filters);
+      newFilters[category] = priceValues;
+    } else {
+      newFilters[category] = filters;
+    }
+    showFilteredResults(newFilters);
+    setFilters(newFilters);
+  };
   return (
     <div style={{ width: "75%", margin: "3rem auto" }}>
       <div style={{ textAlign: "center" }}>
@@ -64,8 +104,22 @@ function LandingPage() {
           Let's Travel Anywhere <RocketOutlined />
         </h2>
       </div>
-      <Row gutter={[16, 16]}>{renderCards}</Row>
+      <Row gutter={[16, 16]}>
+        <Col lg={12} xs={24}>
+          <CheckBox
+            list={Continents}
+            handleFilters={(filters) => handleFilters(filters, "continent")}
+          />
+        </Col>
+        <Col lg={12} xs={24}>
+          <RadioBox
+            list={Price}
+            handleFilters={(filters) => handleFilters(filters, "price")}
+          />
+        </Col>
+      </Row>
 
+      <Row gutter={[16, 16]}>{renderCards}</Row>
       {PostSize >= Limit && (
         <div style={{ display: "flex", justifyContent: "center" }}>
           <button onClick={loadMoreHandler}>더보기</button>
