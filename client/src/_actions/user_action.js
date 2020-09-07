@@ -1,5 +1,12 @@
 import axios from "axios";
-import { LOGIN_USER, REGISTER_USER, AUTH_USER, LOGOUT_USER } from "./types";
+import {
+  LOGIN_USER,
+  REGISTER_USER,
+  AUTH_USER,
+  LOGOUT_USER,
+  ADD_TO_CART,
+  GET_CART_ITEMS,
+} from "./types";
 import { USER_SERVER } from "../components/Config.js";
 
 export function loginUser(dataToSubmit) {
@@ -40,6 +47,43 @@ export function logoutUser() {
 
   return {
     type: LOGOUT_USER,
+    payload: request,
+  };
+}
+
+export function addToCart(id) {
+  let body = {
+    productId: id,
+  };
+  const request = axios
+    .post(`${USER_SERVER}/addToCart`, body)
+    .then((response) => response.data);
+
+  return {
+    type: ADD_TO_CART,
+    payload: request,
+  };
+}
+
+export function getCartItems(cartItems, userCart) {
+  const request = axios
+    .get(`/api/product/products_by_id?id=${cartItems}&type=array`)
+    .then((response) => {
+      // console.log(cartItems); //장바구니에 담겨있는 아이템들의 아아디배열
+      // console.log(userCart); //리덕스의 user.userData.cart 의 정보(상품아이디, 수량, date)
+      // console.log(response.data); //장바구니담은 아이템의 상품정보
+
+      userCart.forEach((cartItem) => {
+        response.data.forEach((productDetail, index) => {
+          if (cartItem.id === productDetail._id) {
+            response.data[index].quantity = cartItem.quantity;
+          }
+        });
+      });
+      return response.data;
+    });
+  return {
+    type: GET_CART_ITEMS,
     payload: request,
   };
 }

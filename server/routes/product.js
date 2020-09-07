@@ -82,12 +82,27 @@ router.post("/products", (req, res) => {
 
 router.get("/products_by_id", (req, res) => {
   let type = req.query.type;
-  let productId = req.query.id;
-  Product.find({ _id: productId })
+  let productIds = req.query.id;
+  if (type === "array") {
+    productIds = req.query.id.split(",");
+    // ids = req.query.id.split(",");
+    // productIds = ids.map((item) => {
+    //   return item;
+    // });
+
+    // productIds =
+    // [
+    //   '5f5234011ebe7742e41432e7',
+    //   '5f526d96a01291152cb3b1c8',
+    //   '5f5276d1d1e20542d42629f6'
+    // ]
+  }
+
+  Product.find({ _id: { $in: productIds } })
     .populate("writer")
     .exec((err, product) => {
       if (err) return res.status(400).send(err);
-      return res.status(200).send({ success: true, product });
+      return res.status(200).send(product);
     });
 });
 
