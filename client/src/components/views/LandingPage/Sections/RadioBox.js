@@ -18,7 +18,7 @@ function RadioBox(props) {
   return (
     <div>
       <Collapse>
-        <Panel header="This is panel header 1" key="1">
+        <Panel header="Price" key="1">
           <Radio.Group onChange={handleChange} value={Value}>
             {renderRadioBox()}
           </Radio.Group>
