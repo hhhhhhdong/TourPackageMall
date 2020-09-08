@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { User } = require("../models/User.js");
 const { auth } = require("../middleware/auth.js");
+const { Product } = require("../models/Product.js");
 
 router.post("/register", (req, res) => {
   const user = new User(req.body);
@@ -106,6 +107,32 @@ router.post("/addToCart", auth, (req, res) => {
       );
     }
   });
+});
+
+router.get("/removeFromCart", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.user._id },
+    {
+      $pull: {
+        cart: { id: req.query.id },
+      },
+    },
+    { new: true },
+    (err, userInfo) => {
+      //userInfo : 해당유저에 카트에 remove를한 데이터를 지운후의 유저정보
+      let cart = userInfo.cart;
+      let array = cart.map((item) => {
+        return item.id;
+      });
+
+      Product.find({ _id: { $in: array } })
+        .populate("writer")
+        .exec((err, productInfo) => {
+          //업데이트된후의 유저의 카트에 담긴 상품의 데이터를 뽑아온다
+          return res.status(200).json({ productInfo, cart }); //유저카트와 그 카트에담긴 상품데이터를 프론트로 보내준다
+        });
+    }
+  );
 });
 
 module.exports = router;
